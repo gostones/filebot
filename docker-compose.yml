@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+  filebot:
+    build:
+      context: ./service
+      dockerfile: Dockerfile
+    image: asperitus/filebot:latest
+    restart: always
+    container_name: filebot
+    hostname: filebot
+    ports:
+      - "8080:8080"
+    networks:
+      web:
+
+networks:
+  web:
+    external: false
+    name: web
