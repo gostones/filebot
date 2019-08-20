@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@trendmicro/react-buttons": "^1.3.1",
+    "@trendmicro/react-checkbox": "^3.4.1",
+    "@trendmicro/react-dropdown": "^1.3.0",
+    "lodash.debounce": "^4.0.8",
     "node-sass": "^4.12.0",
+    "pubsub-js": "^1.7.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.1"
+    "react-infinite-tree": "^1.0.0-alpha.6",
+    "react-scripts": "3.1.1",
+    "styled-components": "^4.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

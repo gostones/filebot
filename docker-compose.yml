@@ -10,7 +10,24 @@ services:
     container_name: filebot
     hostname: filebot
     ports:
-      - "8080:8080"
+      - "18080:8080"
+    networks:
+      web:
+
+  frontend:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    image: asperitus/filebot-ui:latest
+    restart: always
+    # volumes:
+    #   - .:/app
+    working_dir: /app
+    container_name: frontend
+    hostname: frontend
+    ports:
+      - "13000:3000"
+    command: "yarn start"
     networks:
       web:
 
