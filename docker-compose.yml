@@ -20,9 +20,9 @@ services:
       dockerfile: Dockerfile
     image: asperitus/filebot-ui:latest
     restart: always
-    # volumes:
-    #   - ./ui:/app
-    # working_dir: /app
+    volumes:
+      - ./ui:/app
+    working_dir: /app
     container_name: frontend
     hostname: frontend
     ports:

@@ -3,15 +3,15 @@ import Dropdown, { MenuItem } from '@trendmicro/react-dropdown';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import InfiniteTree from 'react-infinite-tree';
-import TreeNode from './components/TreeNode';
-import Toggler from './components/Toggler';
-import Icon from './components/Icon';
-import Clickable from './components/Clickable';
-import Text from './components/Text';
-import Label from './components/Label';
-import Loading from './components/Loading';
+import TreeNode from './TreeNode';
+import Toggler from './Toggler';
+import Icon from './Icon';
+import Clickable from './Clickable';
+import Text from './Text';
+import Label from './Label';
+import Loading from './Loading';
 import PubSub from 'pubsub-js'
-import { sendMsg } from "./api";
+import { sendMsg } from "../api";
 
 const renderTreeNode = ({ node, tree, toggleState, onUpdate }) => (
     <TreeNode
@@ -81,8 +81,8 @@ class Tree extends PureComponent {
     };
 
     tree = null;
-    data = null
-
+    data = null;
+ 
     componentDidMount() {
         // Select the first node
         this.tree.selectNode(this.tree.getChildNodes()[0]);

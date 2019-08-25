@@ -5,14 +5,15 @@ import Header from './components/Header';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
 import Upload from './components/Upload';
-import Tree from './Tree';
-import Preview from './Preview';
-import debounce from 'lodash.debounce';
+import Tree from './components/Tree';
+import Preview from './components/Preview';
+// import debounce from 'lodash.debounce';
 import PubSub from 'pubsub-js'
 
 class App extends Component {
   state = {
     chatHistory: [],
+    selected: new Set(),
 
     node: null,
     filterText: '',
@@ -36,7 +37,19 @@ class App extends Component {
   };
   
   onUpdate = (node) => {
-      this.setState({ node: node });
+      let sel = this.state.selected
+      console.log("node: ", node, " sel: ", sel);
+      if ( node ) {
+        if ( node.state && node.state.checked ) {
+            sel.add(node.id);
+        } else {
+            sel.delete(node.id);
+        }
+      }
+      this.setState({
+          node: node,
+          selected: sel
+      });
   };
 
   filter = (keyword) => {
