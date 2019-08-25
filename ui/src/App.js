@@ -4,6 +4,7 @@ import { connect, sendMsg } from "./api";
 import Header from './components/Header';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
+import Upload from './components/Upload';
 import Tree from './Tree';
 import Preview from './Preview';
 import debounce from 'lodash.debounce';
@@ -104,10 +105,10 @@ class App extends Component {
       <div className="App">
       <Header />
       <div className="container-fluid">
-          <div className="row">
+           <div className="row">
               <div className="col-xs-6">
-                  <h4>Filter</h4>
-                  <input
+                  {/* <h4>Filter</h4> */}
+                  {/* <input
                       ref={node => {
                           this.textFilter = node;
                       }}
@@ -130,61 +131,8 @@ class App extends Component {
                       onKeyPress={debounce((event) => {
                           this.filter();
                       }, 250)}
-                  />
-                  {/* <div className="row">
-                      <div className="col-xs-6">
-                          <div className="checkbox" style={{ margin: '5px 0' }}>
-                              <label>
-                                  <input
-                                      type="checkbox"
-                                      name="case-sensitive"
-                                      checked={this.state.caseSensitive}
-                                      onChange={this.changeCheckedState('caseSensitive')}
-                                  />
-                                  Case-sensitive
-                              </label>
-                          </div>
-                      </div>
-                      <div className="col-xs-6">
-                          <div className="checkbox" style={{ margin: '5px 0' }}>
-                              <label>
-                                  <input
-                                      type="checkbox"
-                                      name="exact-match"
-                                      checked={this.state.exactMatch}
-                                      onChange={this.changeCheckedState('exactMatch')}
-                                  />
-                                  Exact match
-                              </label>
-                          </div>
-                      </div>
-                      <div className="col-xs-6">
-                          <div className="checkbox" style={{ margin: '5px 0' }}>
-                              <label>
-                                  <input
-                                      type="checkbox"
-                                      name="include-ancestors"
-                                      checked={this.state.includeAncestors}
-                                      onChange={this.changeCheckedState('includeAncestors')}
-                                  />
-                                  Include ancestors
-                              </label>
-                          </div>
-                      </div>
-                      <div className="col-xs-6">
-                          <div className="checkbox" style={{ margin: '5px 0' }}>
-                              <label>
-                                  <input
-                                      type="checkbox"
-                                      name="include-descendants"
-                                      checked={this.state.includeDescendants}
-                                      onChange={this.changeCheckedState('includeDescendants')}
-                                  />
-                                  Include descendants
-                              </label>
-                          </div>
-                      </div>
-                  </div> */}
+                  /> */}
+                  
               </div>
           </div>
           <div className="row">
@@ -200,8 +148,14 @@ class App extends Component {
                   <Preview node={this.state.node} />
               </div>
           </div>
+          <div className="row">
+            <div className="col-xs-6">
+            <Upload />
+            </div>
+          </div>
       </div>
       <ChatInput send={this.send} />
+
       <ChatHistory chatHistory={this.state.chatHistory} />
     </div>
     );
