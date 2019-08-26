@@ -40,3 +40,11 @@ func (r *Node) ToJSON() string {
 	b, _ := json.Marshal(r)
 	return string(b)
 }
+
+type Progress struct {
+	ID     string `json:"id"`
+	Loaded int64  `json:"loaded"`
+	Total  int64  `json:"total"`
+	Error  bool   `json:"error"`
+	Note   string `json:"note"`
+}

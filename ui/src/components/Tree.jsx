@@ -173,10 +173,10 @@ class Tree extends PureComponent {
                     return true;
                 }}
                 onKeyUp={(event) => {
-                    console.log('onKeyUp', event.target);
+                    // console.log('onKeyUp', event.target);
                 }}
                 onKeyDown={(event) => {
-                    console.log('onKeyDown', event.target);
+                    // console.log('onKeyDown', event.target);
 
                     event.preventDefault();
 
@@ -196,36 +196,36 @@ class Tree extends PureComponent {
                     }
                 }}
                 onScroll={(scrollOffset, event) => {
-                    const child = event.target.firstChild;
-                    const treeViewportHeight = 400;
-                    console.log((scrollOffset / (child.scrollHeight - treeViewportHeight) * 100).toFixed(2));
-                    console.log('onScroll', scrollOffset, event);
+                    // const child = event.target.firstChild;
+                    // const treeViewportHeight = 400;
+                    // console.log((scrollOffset / (child.scrollHeight - treeViewportHeight) * 100).toFixed(2));
+                    // console.log('onScroll', scrollOffset, event);
                 }}
                 onContentWillUpdate={() => {
-                    console.log('onContentWillUpdate');
+                    // console.log('onContentWillUpdate');
                 }}
                 onContentDidUpdate={() => {
-                    console.log('onContentDidUpdate');
-                    onUpdate(this.tree.getSelectedNode());
+                    // console.log('onContentDidUpdate');
+                    // onUpdate(this.tree.getSelectedNode());
                 }}
                 onOpenNode={(node) => {
-                    console.log('onOpenNode:', node);
+                    // console.log('onOpenNode:', node);
                 }}
                 onCloseNode={(node) => {
-                    console.log('onCloseNode:', node);
+                    // console.log('onCloseNode:', node);
                 }}
                 onSelectNode={(node) => {
-                    console.log('onSelectNode:', node);
-                    onUpdate(node);
+                    // console.log('onSelectNode:', node);
+                    // onUpdate(node);
                 }}
                 onWillOpenNode={(node) => {
-                    console.log('onWillOpenNode:', node);
+                    // console.log('onWillOpenNode:', node);
                 }}
                 onWillCloseNode={(node) => {
-                    console.log('onWillCloseNode:', node);
+                    // console.log('onWillCloseNode:', node);
                 }}
                 onWillSelectNode={(node) => {
-                    console.log('onWillSelectNode:', node);
+                    // console.log('onWillSelectNode:', node);
                 }}
             >
                 {({ node, tree }) => {

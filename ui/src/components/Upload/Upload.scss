@@ -48,7 +48,7 @@
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
-  height: 50px;
+  height: 60px;
   padding: 8px;
   overflow: hidden;
   box-sizing: border-box;
@@ -98,5 +98,6 @@ button:disabled {
   // background: rgb(189, 189, 189);
   background-color: #007bff;
   border-color: #007bff;
+  opacity: .65;
   cursor: default;
 }

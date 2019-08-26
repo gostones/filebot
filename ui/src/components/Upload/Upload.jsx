@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import "./Upload.scss";
 import Progress from "../Progress";
+import PubSub from 'pubsub-js';
+import { sendMsg } from "../../api";
+// import { ENETDOWN } from "constants";
 
 class Upload extends Component {
   constructor(props) {
@@ -9,7 +12,7 @@ class Upload extends Component {
       files: [],
       uploading: false,
       uploadProgress: {},
-      successfullUploaded: false
+      successfulUpload: false
     };
 
     this.onFilesAdded = this.onFilesAdded.bind(this);
@@ -19,67 +22,98 @@ class Upload extends Component {
   }
 
   onFilesAdded(files) {
+    console.log("got files:", files);
     this.setState(prevState => ({
-      files: prevState.files.concat(files)
+      files: files
     }));
   }
 
   async uploadFiles() {
+    console.log("uploading files...", this.state.files);
+
     this.setState({ uploadProgress: {}, uploading: true });
     const promises = [];
     this.state.files.forEach(file => {
+      console.log("uploading file:", file);
       promises.push(this.sendRequest(file));
     });
     try {
       await Promise.all(promises);
 
-      this.setState({ successfullUploaded: true, uploading: false });
+      this.setState({ successfulUpload: true, uploading: false });
     } catch (e) {
       // Not Production ready! Do some error handling here instead...
-      this.setState({ successfullUploaded: true, uploading: false });
+      this.setState({ successfulUpload: true, uploading: false });
     }
   }
 
   sendRequest(file) {
     return new Promise((resolve, reject) => {
-      const req = new XMLHttpRequest();
+      var tid = "progress." + file.root + "." + file.name
+      console.log("send request: topic id: ", tid)
 
-      req.upload.addEventListener("progress", event => {
-        if (event.lengthComputable) {
+      var token = PubSub.subscribe(tid, (thread, event) => {
+          console.log("send request thread: ", thread, " data: ", event)
+
           const copy = { ...this.state.uploadProgress };
-          copy[file.name] = {
-            state: "pending",
-            percentage: (event.loaded / event.total) * 100
-          };
+          if (event.error) {
+            copy[file.name] = { state: "error", percentage: 0 };
+            PubSub.unsubscribe(token);
+            reject(event);
+          } else if (event.loaded === event.total) {
+            copy[file.name] = { state: "done", percentage: 100 };
+            PubSub.unsubscribe(token);
+            resolve(event);
+          } else {
+            copy[file.name] = {
+              state: "pending",
+              percentage: (event.loaded / event.total) * 100
+            };
+          }
+
           this.setState({ uploadProgress: copy });
-        }
       });
 
-      req.upload.addEventListener("load", event => {
-        const copy = { ...this.state.uploadProgress };
-        copy[file.name] = { state: "done", percentage: 100 };
-        this.setState({ uploadProgress: copy });
-        resolve(req.response);
-      });
+      sendMsg("/upload " + file.root + " " + file.name + " " + tid)
 
-      req.upload.addEventListener("error", event => {
-        const copy = { ...this.state.uploadProgress };
-        copy[file.name] = { state: "error", percentage: 0 };
-        this.setState({ uploadProgress: copy });
-        reject(req.response);
-      });
+      // const req = new XMLHttpRequest();
 
-      const formData = new FormData();
-      formData.append("file", file, file.name);
+      // req.upload.addEventListener("progress", event => {
+      //   if (event.lengthComputable) {
+      //     const copy = { ...this.state.uploadProgress };
+      //     copy[file.name] = {
+      //       state: "pending",
+      //       percentage: (event.loaded / event.total) * 100
+      //     };
+      //     this.setState({ uploadProgress: copy });
+      //   }
+      // });
 
-      req.open("POST", "http://localhost:8000/upload");
-      req.send(formData);
+      // req.upload.addEventListener("load", event => {
+      //   const copy = { ...this.state.uploadProgress };
+      //   copy[file.name] = { state: "done", percentage: 100 };
+      //   this.setState({ uploadProgress: copy });
+      //   resolve(req.response);
+      // });
+
+      // req.upload.addEventListener("error", event => {
+      //   const copy = { ...this.state.uploadProgress };
+      //   copy[file.name] = { state: "error", percentage: 0 };
+      //   this.setState({ uploadProgress: copy });
+      //   reject(req.response);
+      // });
+
+      // const formData = new FormData();
+      // formData.append("file", file, file.name);
+
+      // req.open("POST", "http://localhost:8000/upload");
+      // req.send(formData);
     });
   }
 
   renderProgress(file) {
     const uploadProgress = this.state.uploadProgress[file.name];
-    if (this.state.uploading || this.state.successfullUploaded) {
+    if (this.state.uploading || this.state.successfulUpload) {
       return (
         <div className="ProgressWrapper">
           <Progress progress={uploadProgress ? uploadProgress.percentage : 0} />
@@ -98,11 +132,12 @@ class Upload extends Component {
   }
 
   renderActions() {
-    if (this.state.successfullUploaded) {
+    if (this.state.uploading) {
       return (
         <button
           onClick={() =>
-            this.setState({ files: [], successfullUploaded: false })
+            // this.setState({ files: [], successfulUpload: false })
+            this.setState({ successfulUpload: false })
           }
         >
           Cancel
@@ -111,7 +146,7 @@ class Upload extends Component {
     } else {
       return (
         <button
-          disabled={this.state.files.length < 0 || this.state.uploading}
+          disabled={this.state.files.length <= 0}
           onClick={this.uploadFiles}
         >
           Upload
@@ -128,7 +163,7 @@ class Upload extends Component {
           {/* <div>
             <Dropzone
               onFilesAdded={this.onFilesAdded}
-              disabled={this.state.uploading || this.state.successfullUploaded}
+              disabled={this.state.uploading || this.state.successfulUpload}
             />
           </div> */}
           <div className="Files">

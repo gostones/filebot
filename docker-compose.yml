@@ -21,7 +21,8 @@ services:
     image: asperitus/filebot-ui:latest
     restart: always
     volumes:
-      - ./ui:/app
+      - ./ui/src:/app/src
+      - ./ui/public:/app/public
     working_dir: /app
     container_name: frontend
     hostname: frontend

@@ -25,6 +25,7 @@ class App extends Component {
 
   textFilter = null;
   tree = null;
+  upload = null;
 
   changeCheckedState = (key) => (event) => {
       const checked = event.target.checked;
@@ -36,6 +37,14 @@ class App extends Component {
       });
   };
   
+  findRootById = (id) => {
+    let n = this.tree.getNodeById(id);
+    while (n.parent && n.parent.id) {
+        n = n.parent;
+    }
+    return n;
+  };
+
   onUpdate = (node) => {
       let sel = this.state.selected
       console.log("node: ", node, " sel: ", sel);
@@ -50,6 +59,17 @@ class App extends Component {
           node: node,
           selected: sel
       });
+
+      let files = [];
+
+      sel.forEach((id, i) => {
+        let r = this.findRootById(id);
+        files.push({
+            root: r.id,
+            name: id
+        });
+      })
+      this.upload.onFilesAdded(files)
   };
 
   filter = (keyword) => {
@@ -112,7 +132,7 @@ class App extends Component {
       event.target.value = "";
     }
   }
-  
+
   render() {
     return (
       <div className="App">
@@ -163,10 +183,15 @@ class App extends Component {
           </div>
           <div className="row">
             <div className="col-xs-6">
-            <Upload />
+                <Upload
+                    ref={c => {
+                        this.upload = c;
+                    }}
+                />
             </div>
           </div>
       </div>
+
       <ChatInput send={this.send} />
 
       <ChatHistory chatHistory={this.state.chatHistory} />

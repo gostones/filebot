@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
+	"time"
 
 	. "github.com/gostones/filebot/pkg/types"
 	"golang.org/x/net/websocket"
@@ -121,6 +123,31 @@ func (r MessageAgent) announce(msg string) {
 	r.ch <- fmt.Sprintf("%s\n", s)
 }
 
+// upload simulates file uploading
+func (r MessageAgent) upload(tid, args string) {
+	var total, loaded int64
+	go func() {
+		total = 1000
+		loaded = 0
+		for {
+			loaded += rand.Int63n(total)
+			if loaded > total {
+				loaded = total
+			}
+			s := reply(tid, Progress{
+				ID: args,
+				Total:  total,
+				Loaded: loaded,
+			})
+			r.ch <- fmt.Sprintf("%s\n", s)
+			if loaded == total {
+				return
+			}
+			time.Sleep(1 * time.Second)
+		}
+	}()
+}
+
 func (r MessageAgent) onMessage(m *Message) {
 
 	fmt.Printf("message received: %v \n", m)
@@ -163,6 +190,9 @@ func (r MessageAgent) onMessage(m *Message) {
 	switch {
 	case cmd == "/who":
 		r.announce("hi there!")
+		return
+	case cmd == "/upload":
+		r.upload(tid, args)
 		return
 	case cmd == "/list" && recipient == r.uid:
 		if n, err := listDir(r.base, args); err == nil {
